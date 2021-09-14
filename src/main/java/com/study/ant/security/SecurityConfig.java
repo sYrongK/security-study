@@ -1,5 +1,6 @@
 package com.study.ant.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 //  STEP1 nothing
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private CustomAuthenticationProvider authenticationProvider;
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
     /**
      * SpringSecurityFilterChain에 대한 설정
@@ -23,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginProcessingUrl("/login/manage")
+                .loginProcessingUrl("/login/process")
                 .and()
                 .csrf().disable()
                 .headers().frameOptions().disable();    //  h2 웹 콘솔 설정에 필요
@@ -44,11 +51,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        /*
+        인메모리
         auth.inMemoryAuthentication()
                 .withUser("admin").password("admin").roles("ADMIN, USER")
                 .and()
                 .withUser("user1").password("1234").roles("USER");
-    }
+                */
 
+//        auth.authenticationProvider()
+        auth.authenticationProvider(authenticationProvider)
+                .userDetailsService(userDetailsService);
+    }
 
 }

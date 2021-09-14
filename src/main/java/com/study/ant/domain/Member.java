@@ -1,10 +1,13 @@
-package com.study.ant.member.domain;
+package com.study.ant.domain;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
+@Getter @Setter
 @Entity(name = "Member")
 @EqualsAndHashCode
 public class Member {
@@ -15,8 +18,8 @@ public class Member {
     @EqualsAndHashCode.Include
     private Integer idx;
 
-    @Column(name = "id")
-    private String id;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "password")
     private String password;

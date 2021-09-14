@@ -1,9 +1,12 @@
-package com.study.ant.member.domain;
+package com.study.ant.domain;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
+@Getter @Setter
 @Entity(name = "Authority")
 public class Authority {
 
