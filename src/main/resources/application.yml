@@ -5,14 +5,23 @@ server:
       charset: utf-8
       force: true
 spring:
+  devtools:
+    livereload:
+      enabled: true
   h2:
     console:
       enabled: true
+#      settings:
+#        web-allow-others: true
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+#    url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+    url: jdbc:h2:~/test;
     driverClassName: org.h2.Driver
     username: sa
     password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # 데이터베이스 초기화
 logging:
   level:
     root: info

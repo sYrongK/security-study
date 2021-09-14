@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication(scanBasePackages = "com.study.ant")
-@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
+//@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
 public class AntApplication {
 
     public static void main(String[] args) {
