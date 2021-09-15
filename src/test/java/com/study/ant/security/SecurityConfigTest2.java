@@ -6,6 +6,7 @@ import com.study.ant.sample.reposiroty.MemberRepository;
 import com.study.ant.sample.service.SampleService;
 import javassist.tools.rmi.Sample;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -36,47 +37,11 @@ public class SecurityConfigTest2 {
     @Autowired
     private SampleService service;
 
-    @Autowired
-    private MemberRepository repository;
-
     @Test
 //    @WithMockUser(username = "admin", password = "admin", roles = { "ADMIN", "USER" })      // role : "ROLE_USER", authority: "USER" prefix 차이
     @WithUserDetails(userDetailsServiceBeanName = "customUserDetailsService", value = "user2")   //  구현한 UserDetailsService를 통해 직접 구현한 방식 테스트가 필요할 경우 사용. value : 해당 사용자를 찾는다.
+    @DisplayName("userDetailService_테스트")
     void testUserDetailsService() throws Exception {
         User user = service.sample();
     }
-
-//    /**
-//     * admin 추가
-//     */
-//    private Member createAdmin (String id, String pwd) throws Exception {
-//        Authority adminAuth = new Authority();
-//        adminAuth.setAuthority("ADMIN");
-//        Authority userAuth = new Authority();
-//        userAuth.setAuthority("USER");
-//
-//        Member admin = new Member();
-//        admin.setUsername(id);
-//        admin.setPassword(pwd);
-//        admin.setAuthority(Arrays.asList(adminAuth, userAuth));
-//
-//        repository.save(admin);
-//        return admin;
-//    }
-//
-//    /**
-//     * user 가입
-//     */
-//    private Member join(String id, String pwd) throws Exception {
-//        Authority authority = new Authority();
-//        authority.setAuthority("USER");
-//
-//        Member user = new Member();
-//        user.setUsername(id);
-//        user.setPassword(pwd);
-//        user.setAuthority(Arrays.asList(authority));
-//
-//        repository.save(user);
-//        return user;
-//    }
 }

@@ -1,6 +1,7 @@
 package com.study.ant.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -8,9 +9,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class CustomAuthenticationProvider implements AuthenticationProvider {
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -23,13 +30,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
-        if (!password.equals(user.getPassword())) {
+        if (!passwordEncoder().matches(password, user.getPassword())) {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
-        if (!user.isEnabled()) { // 이것도 설명해야겠네!!
+        if (!user.isEnabled()) {
             throw new BadCredentialsException("사용자 계정이 활성화 상태가 아닙니다.");
         }
+        //  principal, credential, authorities 정보를 담은 Authentication 생성해서 리턴
         return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
     }
 

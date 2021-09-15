@@ -70,56 +70,19 @@ class SecurityConfigTest {
                 .andExpect(status().is4xxClientError());
     }
 
-    @Test
-    @DisplayName("로그인_시도")
-    @Transactional
-    void login() throws Exception {
-
-        Member admin = createAdmin("admin", "admin");
-
-        mvc.perform(SecurityMockMvcRequestBuilders.formLogin().user(admin.getUsername()).password(admin.getPassword()))
-                .andExpect(authenticated());
-        
-        /*
-        authenticated() : 시큐리티 통해서 로그인에 성공하면, 해당 테스트 코드 통과 처리
-        unauthenticated() : 시큐리티 통해서 로그인 실패 케이스일 경우를 에상할 때 사용
-         */
-    }
-
-    /**
-     * admin 추가
-     */
-    private Member createAdmin (String id, String pwd) throws Exception {
-        Authority adminAuth = new Authority();
-        adminAuth.setAuthority("ADMIN");
-        Authority userAuth = new Authority();
-        userAuth.setAuthority("USER");
-
-        Member admin = new Member();
-        admin.setUsername(id);
-        admin.setPassword(pwd);
-        admin.setAuthority(Arrays.asList(adminAuth, userAuth));
-
-        repository.save(admin);
-        return admin;
-    }
-
-    /**
-     * user 가입
-     */
-    private Member join(String id, String pwd) throws Exception {
-        Authority authority = new Authority();
-        authority.setAuthority("USER");
-
-        Member user = new Member();
-        user.setUsername(id);
-        user.setPassword(pwd);
-        user.setAuthority(Arrays.asList(authority));
-
-        repository.save(user);
-        return user;
-    }
-
-
-
+//    @Test
+//    @DisplayName("로그인_시도")
+//    @Transactional
+//    void login() throws Exception {
+//
+//        Member admin = createAdmin("admin", "admin");
+//
+//        mvc.perform(SecurityMockMvcRequestBuilders.formLogin().user(admin.getUsername()).password(admin.getPassword()))
+//                .andExpect(authenticated());
+//
+//        /*
+//        authenticated() : 시큐리티 통해서 로그인에 성공하면, 해당 테스트 코드 통과 처리
+//        unauthenticated() : 시큐리티 통해서 로그인 실패 케이스일 경우를 에상할 때 사용
+//         */
+//    }
 }

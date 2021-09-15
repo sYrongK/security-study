@@ -24,6 +24,6 @@ public class Member {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "member", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Authority> authority;
 }

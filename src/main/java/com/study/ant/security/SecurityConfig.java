@@ -1,23 +1,24 @@
 package com.study.ant.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.study.ant.security.handler.CustomLoginSuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 //  STEP1 nothing
+@Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private CustomAuthenticationProvider authenticationProvider;
+    private final CustomAuthenticationProvider authenticationProvider;
 
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     /**
      * SpringSecurityFilterChain에 대한 설정
@@ -25,6 +26,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /**
+         * antMatchers
+         * hasRole, hasAuthority
+         * csrf
+         */
+
         http
                 .authorizeRequests()    //  HttpServletRequest를 사용하는 요청들에대한 접근 제한을 설정하겠다
                 .antMatchers("/login/**","/h2-console/**").permitAll()
@@ -33,14 +40,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login/process")
+                .defaultSuccessUrl("/login/success")    //로그인 성공 후 url
+                .successHandler(new CustomLoginSuccessHandler())
                 .and()
-                .csrf().disable()
+                .logout()
+                .invalidateHttpSession(true)    // session 무효화. true설정하면 sessionManagement 활성화
+                .and()
+                .csrf().disable()   // csrf:
+                .sessionManagement()
+                .invalidSessionUrl("/login")    // 세션 지워버리면 여기로 가나?
+                .and()
                 .headers().frameOptions().disable();    //  h2 웹 콘솔 설정에 필요
     }
 
     /**
      * Spring Security의 전역 설정
-     * HttpSecurity보다 우선시 되며, 정적 자원에 대해선 Security Filter가 적용되지 않도록 설정 가능
+     * HttpSecurity보다 우선시된다.
+     * 특정 요청에 대해서는 시큐리티 보안 설정을 무시하도록 설정 즉, 보안예외처리(정적 리소스 무시 여부, 디버그 모드 설정, 사용자 지정 방화벽 정의 등)
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -60,9 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .withUser("user1").password("1234").roles("USER");
                 */
-
-//        auth.authenticationProvider()
-        auth.authenticationProvider(authenticationProvider)
+        auth.authenticationProvider(authenticationProvider) // this.authenticationProviders.add(authenticationProvider); 의미가..?
                 .userDetailsService(userDetailsService);
     }
 

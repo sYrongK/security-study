@@ -15,6 +15,10 @@ public class MemberDto implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
+    /*
+    추가적으로 필요한 fields ..
+     */
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
