@@ -1,9 +1,8 @@
-package com.study.ant.member.controller;
+package com.study.ant.sample.controller;
 
 import com.study.ant.domain.Authority;
 import com.study.ant.domain.Member;
-import com.study.ant.member.reposiroty.MemberRepository;
-import org.aspectj.lang.annotation.Before;
+import com.study.ant.sample.reposiroty.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,19 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
-import static org.mockito.BDDMockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 
 @SpringBootTest
-@WebMvcTest(MemberController.class)
+@WebMvcTest(SampleController.class)
 class MemberControllerTest {
 
     @MockBean

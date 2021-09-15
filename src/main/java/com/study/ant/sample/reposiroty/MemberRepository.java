@@ -1,4 +1,4 @@
-package com.study.ant.member.reposiroty;
+package com.study.ant.sample.reposiroty;
 
 import com.study.ant.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;

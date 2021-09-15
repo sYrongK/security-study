@@ -2,7 +2,7 @@ package com.study.ant.security;
 
 import com.study.ant.domain.Authority;
 import com.study.ant.domain.Member;
-import com.study.ant.member.reposiroty.MemberRepository;
+import com.study.ant.sample.reposiroty.MemberRepository;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

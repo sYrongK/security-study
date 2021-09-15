@@ -1,4 +1,4 @@
-package com.study.ant.member.dto;
+package com.study.ant.sample.dto;
 
 import lombok.Getter;
 import lombok.Setter;
