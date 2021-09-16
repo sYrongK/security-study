@@ -16,6 +16,6 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         /**
          * 로그인 성공 시 필요한 로직
         * */
-        response.sendRedirect("/home");
+        response.sendRedirect("/main");
     }
 }

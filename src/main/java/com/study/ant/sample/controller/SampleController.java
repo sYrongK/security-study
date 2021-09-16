@@ -2,40 +2,57 @@ package com.study.ant.sample.controller;
 
 import com.study.ant.sample.dto.MemberDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @Slf4j
 public class SampleController {
 
     @GetMapping("/test")
-    public void test() throws Exception {
-        /*
-        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-         : @AuthenticationPrincipal
-        */
+    public ResponseEntity test() throws Exception {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("테스트");
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "test SUCCESS");
+        response.put("authentication", String.valueOf(authentication.getPrincipal()));
+
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/admin")
-    public void adminPage() throws Exception {
-        /*
-        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-         : @AuthenticationPrincipal
-        */
-        log.info("테스트");
+    @PostMapping("/admin_user")
+    public ResponseEntity adminPageUser() throws Exception {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "User @AuthenticationPrincipal SUCCESS");
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/home")
-    public void home() throws Exception {
-        //  ResponseEntity로 하면 보이지않을까
-        log.info("home 화면으로 이동");
+    @PostMapping("/admin_dto")
+    public ResponseEntity adminPageDto(@AuthenticationPrincipal MemberDto member) throws Exception {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Custom User @AuthenticationPrincipal SUCCESS");
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/main")
+    public ResponseEntity main() throws Exception {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Login Success. go to main");
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -1,6 +1,6 @@
 package com.study.ant.security;
 
-import com.study.ant.security.handler.CustomLoginSuccessHandler;
+import com.study.ant.security.handler.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 //  STEP1 nothing
 @Configuration
@@ -16,7 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final CustomAuthenticationProvider authenticationProvider;
+    private final CustomAuthenticationProvider defaultProvider;
+    private final CustomUserDetailsAuthenticationProvider userDetailsProvider;
 
     private final CustomUserDetailsService userDetailsService;
 
@@ -26,29 +28,42 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        /**
-         * antMatchers
-         * hasRole, hasAuthority
-         * csrf
-         */
 
         http
                 .authorizeRequests()    //  HttpServletRequest를 사용하는 요청들에대한 접근 제한을 설정하겠다
-                .antMatchers("/login/**","/h2-console/**").permitAll()
-                .antMatchers("/admin").hasRole("ADMIN") // request에 권한 제한 두기
+                .antMatchers("/login/**", "/h2-console/**").permitAll()  //  ant pattern
+                .antMatchers("/admin_user").hasAuthority("ADMIN") // role은 prefix "ROLE_"
+                .antMatchers("/admin_dto").hasAuthority("ADMIN") // role은 prefix "ROLE_"
                 .anyRequest().authenticated()
                 .and()
+                /*로그인*/
                 .formLogin()
                 .loginProcessingUrl("/login/process")
-                .defaultSuccessUrl("/login/success")    //로그인 성공 후 url
+//                .defaultSuccessUrl("/main")    //로그인 성공 후 url
                 .successHandler(new CustomLoginSuccessHandler())
+                .failureHandler(new CustomLoginFailureHandler())
                 .and()
+                /*로그아웃*/
                 .logout()
+                .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)    // session 무효화. true설정하면 sessionManagement 활성화
+//                .deleteCookies()
+//                .logoutSuccessHandler(new CustomLogoutHandler())
                 .and()
-                .csrf().disable()   // csrf:
+                /*예외 처리*/
+//                .exceptionHandling()
+//                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인증 실패시
+//                .accessDeniedHandler(new CustomAccessDeniedHandler())           //  인가 실패시
+//                .and()
+                /*csrf*/
+                .csrf().disable()   // csrf: 사용자 의도와 다른 요청을 서버에 넣게 하는 공격
+                /*세션*/
                 .sessionManagement()
-                .invalidSessionUrl("/login")    // 세션 지워버리면 여기로 가나?
+                .invalidSessionUrl("/")             // 세션이 유효하지 않을 때 이동할 url
+                    .maximumSessions(1)             //  최대 세션 갯수
+                    .maxSessionsPreventsLogin(true) //  동시 로그인 차단. false : 기존 세션 만료
+                    .expiredUrl("/")                //  세션 만료시 이동 페이지
+                    .and()
                 .and()
                 .headers().frameOptions().disable();    //  h2 웹 콘솔 설정에 필요
     }
@@ -76,8 +91,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .withUser("user1").password("1234").roles("USER");
                 */
-        auth.authenticationProvider(authenticationProvider) // this.authenticationProviders.add(authenticationProvider); 의미가..?
-                .userDetailsService(userDetailsService);
+        auth
+                .authenticationProvider(defaultProvider)    // defaultProvider  userDetailsProvider
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(new BCryptPasswordEncoder());  // provider 구현 안하고 userDetailsService만 탈 경우 꼭 여기서 필요
     }
 
 }

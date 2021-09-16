@@ -2,6 +2,7 @@ package com.study.ant.security;
 
 import com.study.ant.domain.Authority;
 import com.study.ant.domain.Member;
+import com.study.ant.sample.dto.MemberDto;
 import com.study.ant.sample.reposiroty.MemberRepository;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +26,31 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private MemberRepository repository;
 
-    @SneakyThrows
+//    @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        try {
 
-        Member member = repository.findByUsername(username);
+            Member member = repository.findByUsername(username);
 
-        if (member == null) {
-            throw new UsernameNotFoundException(username);  //
+            if (member == null) {
+                throw new UsernameNotFoundException(username);  //
+            }
+
+            return MemberDto.builder()
+                    .username(member.getUsername())
+                    .password(member.getPassword())
+                    .authorities(getAuthorities(member.getAuthority()))
+                    .build();
+
+//        기본 User 인증용 객체 사용
+//        return new User(member.getUsername(), member.getPassword(), getAuthorities(member.getAuthority()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        return new User(member.getUsername(), member.getPassword(), getAuthorities(member.getAuthority()));
+        return null;
     }
 
     private List<GrantedAuthority> getAuthorities(List<Authority> list) throws Exception {

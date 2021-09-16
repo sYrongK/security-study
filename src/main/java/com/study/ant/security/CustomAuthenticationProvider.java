@@ -1,5 +1,6 @@
 package com.study.ant.security;
 
+import com.study.ant.sample.dto.MemberDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
@@ -30,7 +26,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
-        if (!passwordEncoder().matches(password, user.getPassword())) {
+        if (!new BCryptPasswordEncoder().matches(password, user.getPassword())) {
             throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
 
