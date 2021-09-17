@@ -29,15 +29,6 @@ public class SampleController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/admin_user")
-    public ResponseEntity adminPageUser() throws Exception {
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "User @AuthenticationPrincipal SUCCESS");
-
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/admin_dto")
     public ResponseEntity adminPageDto(@AuthenticationPrincipal MemberDto member) throws Exception {
 

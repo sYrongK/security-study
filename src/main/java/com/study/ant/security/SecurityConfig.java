@@ -32,8 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()    //  HttpServletRequest를 사용하는 요청들에대한 접근 제한을 설정하겠다
                 .antMatchers("/login/**", "/h2-console/**").permitAll()  //  ant pattern
-                .antMatchers("/admin_user").hasAuthority("ADMIN") // role은 prefix "ROLE_"
-                .antMatchers("/admin_dto").hasAuthority("ADMIN") // role은 prefix "ROLE_"
+                .antMatchers("/admin_dto").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 /*로그인*/
@@ -80,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-        사용자 세부 서비스 설정   ??
+        사용자 세부 서비스 설정
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -92,7 +91,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("user1").password("1234").roles("USER");
                 */
         auth
-                .authenticationProvider(defaultProvider)    // defaultProvider  userDetailsProvider
+//                .authenticationProvider(defaultProvider)    // defaultProvider  userDetailsProvider
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(new BCryptPasswordEncoder());  // provider 구현 안하고 userDetailsService만 탈 경우 꼭 여기서 필요
     }

@@ -26,7 +26,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private MemberRepository repository;
 
-//    @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
